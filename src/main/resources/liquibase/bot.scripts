@@ -1,0 +1,4 @@
+-- liquibase formatted sql
+
+-- changeset popova:1
+CREATE TABLE notification_task(SERIAL id, BIGINT chat_id, TEXT notification, TIMESTAMP dataTime);
