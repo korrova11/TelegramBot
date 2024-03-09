@@ -23,8 +23,8 @@ private final NotificationRepository repository;
         return repository.findAllByLocalDateTime(localDateTime);
 
     }
-    public void deleteFromRepo(Long id){
-        repository.deleteById(id);
+    public void deleteFromRepo(Notification_task notification_task){
+        repository.delete(notification_task);
     }
 
 

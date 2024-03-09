@@ -20,7 +20,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 
-
 @Service
 public class TelegramBotUpdatesListener implements UpdatesListener {
 
@@ -47,22 +46,21 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
 
             // Process your updates here
             Pattern pattern1 = Pattern.compile("([0-9\\.\\:\\s]{16})(\\s)([\\W+]+)");
-           if (update.message().text().equals("/start")) {
+            if (update.message().text().equals("/start")) {
                 SendMessage message = new SendMessage(update.message().chat().id(),
                         "Здравствуй, " + update.message().chat().firstName()
-                + "!");
+                                + "!");
                 SendResponse response = telegramBot.execute(message);
             }
             Matcher matcher = pattern1.matcher(update.message().text());
             if (matcher.matches()) {
                 String dateTime = matcher.group(1);
-               // String time = matcher.group(2);
                 String text = matcher.group(3);
-                LocalDateTime localDateTime=  LocalDateTime.parse(dateTime,
+                LocalDateTime localDateTime = LocalDateTime.parse(dateTime,
                         DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm"));
-                repository.save(new Notification_task(update.message().chat().id(),text,
+               /* repository.save(new Notification_task(update.message().chat().id(),text,
                        localDateTime ));
-                logger.info("Was invoked method for create notific");
+                */
             }
 
         });
