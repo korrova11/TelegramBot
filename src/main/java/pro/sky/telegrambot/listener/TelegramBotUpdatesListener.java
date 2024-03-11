@@ -51,26 +51,29 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
             logger.info("Processing update: {}", update);
 
             // Process your updates here
+            String inMessage=update.message().text();
+            Long chatId= update.message().chat().id();
+            Pattern pattern1 = Pattern.compile("([0-9\\.\\:\\s]{16})(\\s)([\\W+]+)");
+            Matcher matcher = pattern1.matcher(inMessage);
+
             if (update.message().text().equals("/start")) {
-                SendMessage message = new SendMessage(update.message().chat().id(),
+                SendMessage message = new SendMessage(chatId,
                         "Здравствуй, " + update.message().chat().firstName()
                                 + "! Это напоминалка-бот, чтобы создать напоминание," +
                                 "пришли его в формате: ЧЧ.ММ.ГГГГ  текст напоминания");
                 SendResponse response = telegramBot.execute(message);
             }
-            Pattern pattern1 = Pattern.compile("([0-9\\.\\:\\s]{16})(\\s)([\\W+]+)");
-            Matcher matcher = pattern1.matcher(update.message().text());
             else if (matcher.matches()) {
                 String dateTime = matcher.group(1);
                 String textMessage = matcher.group(3);
                 LocalDateTime localDateTime = LocalDateTime.parse(dateTime,
                         DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm"));
                 Notification_task notification_task = new Notification_task(
-                        1l,update.message().chat().id(),textMessage,localDateTime);
+                       chatId,textMessage,localDateTime);
                 notificationService.addInRepo(notification_task);
 
             }
-            else telegramBot.execute(new SendMessage(update.message().chat().id(),
+            else telegramBot.execute(new SendMessage(chatId,
                         "неправильный формат сообщения"));
 
         });

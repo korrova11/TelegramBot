@@ -1,7 +1,33 @@
 package pro.sky.telegrambot.cron;
 
+import com.pengrad.telegrambot.TelegramBot;
+import com.pengrad.telegrambot.request.SendMessage;
 import org.springframework.stereotype.Component;
+import pro.sky.telegrambot.service.NotificationService;
+import org.springframework.scheduling.annotation.Scheduled;
+
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 
 @Component
 public class NotificationCron {
+    private final TelegramBot telegramBot;
+    private final NotificationService notificationService;
+
+    public NotificationCron(TelegramBot telegramBot, NotificationService notificationService) {
+        this.telegramBot = telegramBot;
+        this.notificationService = notificationService;
+    }
+    @Scheduled(cron="0 0/1 * * * *")
+    public void doReminder(){
+        notificationService.findAllByLocalDateTime(LocalDateTime.now()
+                .truncatedTo(ChronoUnit.MINUTES))
+                .forEach(reminder->{
+                    telegramBot.execute(new SendMessage(reminder.getChat_id(),
+                            reminder.getNotification()));
+                    notificationService.deleteFromRepo(reminder);
+                });
+    }
+
+
 }

@@ -20,7 +20,7 @@ private final NotificationRepository repository;
 
     }
     public List<Notification_task> findAllByLocalDateTime(LocalDateTime localDateTime){
-        return repository.findAllByLocalDateTime(localDateTime);
+        return repository.findAllByDateTime(localDateTime);
 
     }
     public void deleteFromRepo(Notification_task notification_task){
