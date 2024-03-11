@@ -34,8 +34,8 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
     @Autowired
     private NotificationCron notificationCron;
 
-    public TelegramBotUpdatesListener(TelegramBot telegramBot,NotificationService notificationService, NotificationCron notificationCron) {
-        this.telegramBot=telegramBot;
+    public TelegramBotUpdatesListener(TelegramBot telegramBot, NotificationService notificationService, NotificationCron notificationCron) {
+        this.telegramBot = telegramBot;
         this.notificationService = notificationService;
         this.notificationCron = notificationCron;
     }
@@ -51,8 +51,8 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
             logger.info("Processing update: {}", update);
 
             // Process your updates here
-            String inMessage=update.message().text();
-            Long chatId= update.message().chat().id();
+            String inMessage = update.message().text();
+            Long chatId = update.message().chat().id();
             Pattern pattern1 = Pattern.compile("([0-9\\.\\:\\s]{16})(\\s)([\\W+]+)");
             Matcher matcher = pattern1.matcher(inMessage);
 
@@ -62,19 +62,17 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
                                 + "! Это напоминалка-бот, чтобы создать напоминание," +
                                 "пришли его в формате: ЧЧ.ММ.ГГГГ  текст напоминания");
                 SendResponse response = telegramBot.execute(message);
-            }
-            else if (matcher.matches()) {
+            } else if (matcher.matches()) {
                 String dateTime = matcher.group(1);
                 String textMessage = matcher.group(3);
                 LocalDateTime localDateTime = LocalDateTime.parse(dateTime,
                         DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm"));
                 Notification_task notification_task = new Notification_task(
-                       chatId,textMessage,localDateTime);
+                        chatId, textMessage, localDateTime);
                 notificationService.addInRepo(notification_task);
 
-            }
-            else telegramBot.execute(new SendMessage(chatId,
-                        "неправильный формат сообщения"));
+            } else telegramBot.execute(new SendMessage(chatId,
+                    "неправильный формат сообщения"));
 
         });
         return UpdatesListener.CONFIRMED_UPDATES_ALL;
