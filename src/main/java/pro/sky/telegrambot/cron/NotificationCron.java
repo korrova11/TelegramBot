@@ -8,6 +8,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.concurrent.TimeUnit;
 
 @Component
 public class NotificationCron {
@@ -18,7 +19,7 @@ public class NotificationCron {
         this.telegramBot = telegramBot;
         this.notificationService = notificationService;
     }
-    @Scheduled(cron="0 0/1 * * * *")
+    @Scheduled(fixedDelay = 1, timeUnit = TimeUnit.MINUTES)
     public void doReminder(){
         notificationService.findAllByLocalDateTime(LocalDateTime.now()
                 .truncatedTo(ChronoUnit.MINUTES))

@@ -44,6 +44,7 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
     public void init() {
         telegramBot.setUpdatesListener(this);
     }
+    private static final Pattern pattern1 = Pattern.compile("([0-9\\.\\:\\s]{16})(\\s)([\\W+]+)");
 
     @Override
     public int process(List<Update> updates) {
@@ -53,14 +54,14 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
             // Process your updates here
             String inMessage = update.message().text();
             Long chatId = update.message().chat().id();
-            Pattern pattern1 = Pattern.compile("([0-9\\.\\:\\s]{16})(\\s)([\\W+]+)");
+           // Pattern pattern1 = Pattern.compile("([0-9\\.\\:\\s]{16})(\\s)([\\W+]+)");
             Matcher matcher = pattern1.matcher(inMessage);
 
             if (update.message().text().equals("/start")) {
                 SendMessage message = new SendMessage(chatId,
                         "Здравствуй, " + update.message().chat().firstName()
                                 + "! Это напоминалка-бот, чтобы создать напоминание," +
-                                "пришли его в формате: ЧЧ.ММ.ГГГГ  текст напоминания");
+                                "пришли его в формате: dd.MM.yyyy HH:mm  текст напоминания");
                 SendResponse response = telegramBot.execute(message);
             } else if (matcher.matches()) {
                 String dateTime = matcher.group(1);
